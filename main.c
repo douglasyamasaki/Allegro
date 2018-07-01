@@ -654,28 +654,28 @@ int main()
                     i=3;
                     anima=0;
                 }
-                if (key[KEY_DOWN]){
+                else if (key[KEY_DOWN]){
                     onq= 2;
                     moveLogico (onq,jogador,maze);
                     mov=2;
                     i=0;
                     anima=0;
                 }
-                if (key[KEY_LEFT]){
+                else if (key[KEY_LEFT]){
                     onq = 3;
                     moveLogico (onq,jogador,maze);
                     mov=2;
                     i=1;
                     anima=0;
                 }
-                if (key[KEY_RIGHT]){
+                else if (key[KEY_RIGHT]){
                     onq=4;
                     moveLogico(onq,jogador,maze);
                     mov=2;
                     i=2;
                     anima=0;
                 }
-                if (anima == 2){
+                else if (anima == 2){
                     anima=0;
                     mov=2;
                     moveu=1;
