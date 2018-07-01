@@ -100,22 +100,22 @@ case 3:
 
 void moveMonstro (Monstro* monstro,int dir,char maze[LINES][COLUMS]){
     if (dir == 3){
-        monstro->y-=1+monstro->tipo;
+        monstro->y-=1;
         monstro->vy = -0.5 - monstro->tipo*0.5;
         monstro->dir = 1;
         }
     if (dir == 4){
-        monstro->y+=1+monstro->tipo;
+        monstro->y+=1;
         monstro->vy = 0.5 + monstro->tipo*0.5;
         monstro->dir = 2;
         }
     if (dir == 1){
-        monstro->x-=1+monstro->tipo;
+        monstro->x-=1;
         monstro->vx = -0.5 - monstro->tipo*0.5;
         monstro->dir = 3;
         }
     if (dir == 2){
-        monstro->x+=1+monstro->tipo;
+        monstro->x+=1;
         monstro->vx = 0.5 + monstro->tipo*0.5;
         monstro->dir = 0;
         }
@@ -128,6 +128,8 @@ void setaDraw (Monstro** monstros){
             monstros[i]->rx = monstros[i]->x *20;
             monstros[i]->ry = monstros[i]->y *20;
             monstros[i]->dir = 0;
+            monstros[i]->vx=0;
+            monstros[i]->vy=0;
         }
 }
 
@@ -562,6 +564,7 @@ void printMaze(char mat[LINES][COLUMS])
 int main()
 {
     int i,j,anima=0,mov=0,onq,zero=0,moveu=0,jm=0,colocou=0,xsaida,ysaida,ganhou=0;
+    printf("Bem vindo \nuso : \nsetinhas do teclado para controle\nespaco para bomba\nrecomenda-se jogar pressionando\n");
 
     /// monolito de declaracoes de variaveis , starts do allegro e starts de structs.
 
@@ -577,7 +580,7 @@ int main()
     ///inicializa timers
     LOCK_FUNCTION(ticks_counter);
     LOCK_VARIABLE(ticks);
-    install_int_ex(ticks_counter, BPS_TO_TIMER(60)); //incrementa 60 vezes em um segundo
+    install_int_ex(ticks_counter, BPS_TO_TIMER(120)); //incrementa 60 vezes em um segundo
     LOCK_FUNCTION(frame_upadate_counter);
     LOCK_VARIABLE(frame_update);
     install_int_ex(frame_upadate_counter, MSEC_TO_TIMER(100));
@@ -712,6 +715,19 @@ int main()
                 jogador->y+=jogador->vy;
                 int k;
                 for (k=0;k<5;k++){
+                    if (monstros[k]->tipo == 1 && anima == 21 && (monstros[k]->vx != 0 || monstros[k]->vy != 0)){
+                        monstros[k]->vx=0;
+                        monstros[k]->vy=0;
+                        int xp,yp,xm,ym,dist=999,dir=0,fk;
+                        xp = (int) jogador->x/20;
+                        yp = (int) jogador->y/20;
+                        xm = (int) monstros[k]->x;
+                        ym = (int) monstros[k]->y;
+                        maze[yp][xp] = 'p';
+                        checaCaminho(maze,xm,ym,5,fk);
+                        dist = compConexo(maze,ym,xm,&dir);
+                        moveMonstro(monstros[k],dir,maze);
+                }
                     monstros[k]->rx+=monstros[k]->vx;
                     monstros[k]->ry+=monstros[k]->vy;
                 }
@@ -727,6 +743,8 @@ int main()
                         jm= frame_update % 4;
                     else
                         jm =0;
+
+
                     masked_blit(monstros[k]->bm,buffer,jm * frame_size_w,monstros[k]->dir * frame_size_w,monstros[k]->ry,monstros[k]->rx,frame_size_w,frame_size_h);
                     if (((int)monstros[k]->rx == (int)jogador->y && (int)monstros[k]->ry == (int)jogador->x)&& monstros[k]->isVivo == 1)
                         jogador->isKilled = 1;
